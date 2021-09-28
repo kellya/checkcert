@@ -38,4 +38,4 @@ def main(san, dump, port, expires, domain):
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pragma: no cover

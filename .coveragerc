@@ -1,6 +1,6 @@
 [run]
 source =
-    YOUR_SOURCE
+    checkcert
 omit =
     */__init__.py
 
