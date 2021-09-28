@@ -24,6 +24,6 @@ task-status = 'checkcert.checkcert:main'
 
 [tool.semantic_release]
 version_variable = [
-    "task_status/task_status.py:__version__",
+    "checkcert/checkcert.py:__version__",
     "pyproject.toml:version"
 ]

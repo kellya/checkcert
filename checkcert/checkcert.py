@@ -3,8 +3,11 @@ import sys
 import click
 import M2Crypto
 
+__version__ = "0.1.0"
+
 
 @click.command()
+@click.version_option(__version__, prog_name="checkcert")
 @click.option("--san", is_flag=True, help="Output Subject Alternate Names")
 @click.option(
     "--dump", is_flag=True, help="Dump the full text version of the x509 certificate"
