@@ -1,0 +1,9 @@
+[run]
+source =
+    YOUR_SOURCE
+omit =
+    */__init__.py
+
+[report]
+fail_under =
+    80
