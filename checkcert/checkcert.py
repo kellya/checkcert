@@ -7,11 +7,14 @@ import M2Crypto
 @click.command()
 @click.option("--san", is_flag=True, help="Output Subject Alternate Names")
 @click.option(
+    "--dump", is_flag=True, help="Dump the full text version of the x509 certificate"
+)
+@click.option(
     "--port", default=443, type=int, help="TCP port to connect to (default 443)"
 )
 @click.option("--expires", is_flag=True, help="Display the expiration date")
 @click.argument("domain")
-def main(san, port, expires, domain):
+def main(san, dump, port, expires, domain):
     # handle a domain given with a : in it to specify the port
     if ":" in domain:
         uri = domain.split(":")
@@ -19,6 +22,9 @@ def main(san, port, expires, domain):
         port = uri[1]
     cert = ssl.get_server_certificate((domain, port))
     x509 = M2Crypto.X509.load_cert_string(cert)
+    if dump:
+        print(x509.as_text())
+        sys.exit()
     if san:
         all_sans = x509.get_ext("subjectAltName").get_value()
         sans = all_sans.split(",")
