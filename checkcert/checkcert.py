@@ -13,14 +13,9 @@ from collections import namedtuple
 
 __version__ = "0.1.0"
 
-HostInfo = namedtuple(field_names="cert hostname peername", typename="HostInfo")
-
-
-def verify_cert(cert, hostname):
-    # verify notAfter/notBefore, CA trusted, servername/sni/hostname
-    cert.has_expired()
-    # service_identity.pyopenssl.verify_hostname(client_ssl, hostname)
-    # issuer
+HostInfo = namedtuple(
+    field_names="cert hostname peername is_valid", typename="HostInfo"
+)
 
 
 def get_certificate(hostname, port):
@@ -44,7 +39,12 @@ def get_certificate(hostname, port):
     except ConnectionRefusedError:
         pass
 
-    return HostInfo(cert=crypto_cert, peername=peername, hostname=hostname)
+    return HostInfo(
+        cert=crypto_cert,
+        peername=peername,
+        hostname=hostname,
+        is_valid=not cert.has_expired(),
+    )
 
 
 def get_alt_names(cert):
@@ -88,20 +88,15 @@ def print_basic_info(hostinfo):
     )
 
 
-def check_it_out(hostname, port):
-    hostinfo = get_certificate(hostname, port)
-    print_basic_info(hostinfo)
-
-
 @click.command()
 @click.version_option(__version__, prog_name="checkcert")
 @click.option("--san", is_flag=True, help="Output Subject Alternate Names")
 @click.option(
     "--dump", is_flag=True, help="Dump the full text version of the x509 certificate"
 )
-@click.option("--expires", is_flag=True, help="Display the expiration date")
+@click.option("--color/--no-color", default=True)
 @click.argument("hosts", nargs=-1)
-def main(san, dump, expires, hosts):
+def main(san, dump, color, hosts):
     # setup the list of tuples
     HOSTS = []
     # handle a domain given with a : in it to specify the port
@@ -127,7 +122,13 @@ def main(san, dump, expires, hosts):
             output_string += f"\tissuer: {get_issuer(hostinfo.cert)}\n"
             output_string += f"\tnotBefore: {hostinfo.cert.not_valid_before}\n"
             output_string += f"\tnotAfter:  {hostinfo.cert.not_valid_after}\n\n"
-            print(output_string)
+            if hostinfo.is_valid and color:
+                click.echo(click.style(output_string, fg="green"))
+            elif not hostinfo.is_valid and color:
+                click.echo(click.style(output_string, fg="red"))
+            else:
+                click.echo(click.style(output_string))
+
     # print(f"Certificate for {domain}\nexpires after: {x509.get_not_after()}")
 
 
