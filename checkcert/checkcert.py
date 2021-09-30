@@ -113,8 +113,8 @@ def main(san, dump, expires, hosts):
             HOSTS.append((host_info[0], int(host_info[1])))
         else:
             HOSTS.append((host, 443))
-    output_string = ""
     for hostinfo in map(lambda x: get_certificate(x[0], x[1]), HOSTS):
+        output_string = ""
         if dump:
             print(get_x509_text(hostinfo.cert).decode())
         else:
