@@ -49,7 +49,7 @@ def get_alt_names(cert):
     try:
         ext = cert.extensions.get_extension_for_class(x509.SubjectAlternativeName)
         return ext.value.get_values_for_type(x509.DNSName)
-    except x509.ExtensionNotFound:
+    except x509.ExtensionNotFound:  # pragma: no cover
         return None
 
 
@@ -63,7 +63,7 @@ def get_common_name(cert):
     try:
         names = cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)
         return names[0].value
-    except x509.ExtensionNotFound:
+    except x509.ExtensionNotFound:  # pragma: no cover
         return None
 
 
@@ -72,7 +72,7 @@ def get_issuer(cert):
     try:
         names = cert.issuer.get_attributes_for_oid(NameOID.COMMON_NAME)
         return names[0].value
-    except x509.ExtensionNotFound:
+    except x509.ExtensionNotFound:  # pragma: no cover
         return None
 
 
@@ -123,8 +123,6 @@ def main(san, dump, color, hosts):
                     click.echo(click.style(output_string, fg="red"))
                 else:
                     click.echo(click.style(output_string))
-
-    # print(f"Certificate for {domain}\nexpires after: {x509.get_not_after()}")
 
 
 if __name__ == "__main__":

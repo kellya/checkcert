@@ -11,6 +11,8 @@ def test_main():
         assert response.exit_code == 0
         response = runner.invoke(cert_main, ["www.franklin.edu:443"])
         assert response.exit_code == 0
+        response = runner.invoke(cert_main, ["www.franklin.edu", "--no-color"])
+        assert response.exit_code == 0
 
 
 def test_version():
@@ -26,4 +28,9 @@ def test_dump():
 
 def test_san():
     response = runner.invoke(cert_main, ["www.franklin.edu", "--san"])
+    assert response.exit_code == 0
+
+
+def test_bad_cert():
+    response = runner.invoke(cert_main, ["support.bluequill.com", "--san"])
     assert response.exit_code == 0
