@@ -18,7 +18,7 @@ HostInfo = namedtuple(
 
 
 def get_certificate(hostname, port):
-    """retreive certificate details and return HostInfo tuple of values"""
+    """retrieve certificate details and return HostInfo tuple of values"""
     hostname_idna = idna.encode(hostname)
     sock = socket()
 
@@ -45,7 +45,7 @@ def get_certificate(hostname, port):
 
 
 def get_alt_names(cert):
-    """retreive the SAN values for given cert"""
+    """retrieve the SAN values for given cert"""
     try:
         ext = cert.extensions.get_extension_for_class(x509.SubjectAlternativeName)
         return ext.value.get_values_for_type(x509.DNSName)
@@ -59,7 +59,7 @@ def get_x509_text(cert):
 
 
 def get_common_name(cert):
-    """Retrun the common name from the certificate"""
+    """Return the common name from the certificate"""
     try:
         names = cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)
         return names[0].value
