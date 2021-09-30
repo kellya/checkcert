@@ -11,7 +11,7 @@ import sys
 from socket import socket
 from collections import namedtuple
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 HostInfo = namedtuple(
     field_names="cert hostname peername is_valid", typename="HostInfo"

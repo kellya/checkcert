@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "checkcert"
-version = "0.1.0"
-description = ""
-authors = ["Alex Kelly <alex.kelly@franklin.edu>"]
+version = "0.2.0"
+description = "CLI to check tls cert information and determine validity"
+authors = ["Alex Kelly <kellya@arachnitech.com>"]
+readme = "README.md"
+homepage = "https://github.com/kellya/checkcert"
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -21,7 +24,7 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-task-status = 'checkcert.checkcert:main'
+checkcert = 'checkcert.checkcert:main'
 
 [tool.semantic_release]
 version_variable = [
