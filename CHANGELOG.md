@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.4.0 (2021-10-01)
+
+#### New Features
+
+* add text output for cert validity in addition to color
+#### Refactorings
+
+* align output data rather than heading for output
+#### Docs
+
+* update readme with more details
+#### Others
+
+* add ci directory for test input data
+* correct lint error on file encoding
+* add test for file input
+
+Full set of changes: [`v0.3.0...v0.4.0`](https://git.admin.franklin.edu/tins/checkcert/compare/v0.3.0...v0.4.0)
+
 ## v0.3.0 (2021-10-01)
 
 #### New Features
