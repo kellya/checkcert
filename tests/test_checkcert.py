@@ -52,3 +52,9 @@ def test_bad_cert():
     """verify an expired certificate works"""
     response = runner.invoke(cert_main, ["support.bluequill.com", "--san"])
     assert response.exit_code == 0
+
+
+def test_from_file():
+    """Verify loading domains from file"""
+    response = runner.invoke(cert_main, ["--filename", "ci/test_domains.txt"])
+    assert response.exit_code == 0
