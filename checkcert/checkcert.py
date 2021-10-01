@@ -2,6 +2,7 @@
 from collections import namedtuple
 import concurrent.futures
 from socket import socket
+from typing import List, Tuple, Any
 import click
 from OpenSSL import SSL
 from OpenSSL import crypto
@@ -12,9 +13,7 @@ import idna
 
 __version__ = "0.4.0"
 
-HostInfo = namedtuple(
-    field_names="cert hostname peername is_valid", typename="HostInfo"
-)
+HostInfo = namedtuple("HostInfo", ["cert", "hostname", "peername", "is_valid"])
 
 
 def get_certificate(hostname: str, port: int) -> HostInfo:
@@ -25,8 +24,6 @@ def get_certificate(hostname: str, port: int) -> HostInfo:
     sock.connect((hostname, port))
     peername = sock.getpeername()
     ctx = SSL.Context(SSL.SSLv23_METHOD)  # most compatible
-    ctx.check_hostname = False
-    ctx.verify_mode = SSL.VERIFY_NONE
     sock_ssl = SSL.Connection(ctx, sock)
     sock_ssl.set_connect_state()
     sock_ssl.set_tlsext_host_name(hostname_idna)
@@ -44,7 +41,7 @@ def get_certificate(hostname: str, port: int) -> HostInfo:
     )
 
 
-def get_alt_names(cert: str) -> str:
+def get_alt_names(cert: Any) -> Any:
     """retrieve the SAN values for given cert"""
     try:
         ext = cert.extensions.get_extension_for_class(x509.SubjectAlternativeName)
@@ -53,12 +50,12 @@ def get_alt_names(cert: str) -> str:
         return None
 
 
-def get_x509_text(cert: str) -> str:
+def get_x509_text(cert: Any) -> Any:
     """return the human-readable text version of the certificate"""
     return crypto.dump_certificate(crypto.FILETYPE_TEXT, cert)
 
 
-def get_common_name(cert: str) -> str:
+def get_common_name(cert: Any) -> Any:
     """Return the common name from the certificate"""
     try:
         names = cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)
@@ -67,7 +64,7 @@ def get_common_name(cert: str) -> str:
         return None
 
 
-def get_issuer(cert: str) -> str:
+def get_issuer(cert: Any) -> Any:
     """Return the name of the CA/Issuer of the certificate"""
     try:
         names = cert.issuer.get_attributes_for_oid(NameOID.COMMON_NAME)
@@ -76,7 +73,7 @@ def get_issuer(cert: str) -> str:
         return None
 
 
-def get_host_list_tuple(hosts: list) -> list:
+def get_host_list_tuple(hosts: list) -> List[Tuple[str, int]]:
     """create a tuple of host and port based on hosts given to us in the form
     host:port
     """
