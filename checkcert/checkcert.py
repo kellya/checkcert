@@ -10,7 +10,7 @@ from cryptography.x509.oid import NameOID
 import idna
 
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 HostInfo = namedtuple(
     field_names="cert hostname peername is_valid", typename="HostInfo"
