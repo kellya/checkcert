@@ -17,7 +17,7 @@ HostInfo = namedtuple(
 )
 
 
-def get_certificate(hostname, port):
+def get_certificate(hostname, port) -> HostInfo:
     """retrieve certificate details and return HostInfo tuple of values"""
     hostname_idna = idna.encode(hostname)
     sock = socket()
@@ -40,7 +40,7 @@ def get_certificate(hostname, port):
         cert=crypto_cert,
         peername=peername,
         hostname=hostname,
-        is_valid=not cert.has_expired(),
+        is_valid=not cert.has_expired(),  # is_valid is the inverse of has_expired
     )
 
 
@@ -76,6 +76,22 @@ def get_issuer(cert):
         return None
 
 
+def get_host_list_tuple(hosts: list) -> list:
+    """create a tuple of host and port based on hosts given to us in the form
+    host:port
+    """
+    all_hosts = []
+    for host in hosts:
+        # if  a host has a : in it, split on the :, first field will be host
+        # second field will be the port
+        if ":" in host:
+            host_info = host.split(":")
+            all_hosts.append((host_info[0], int(host_info[1])))
+        else:
+            all_hosts.append((host, 443))
+    return all_hosts
+
+
 @click.command()
 @click.version_option(__version__, prog_name="checkcert")
 @click.option("--san", is_flag=True, help="Output Subject Alternate Names")
@@ -100,7 +116,6 @@ def get_issuer(cert):
 def main(san, dump, color, filename, valid, hosts):
     """Return information about certificates given including their validity"""
     # setup the list of tuples
-    all_hosts = []
     # handle a domain given with a : in it to specify the port
     if filename:
         hosts = []
@@ -108,14 +123,7 @@ def main(san, dump, color, filename, valid, hosts):
             for line in infile:
                 line = line.strip()
                 hosts.append(line)
-    for host in hosts:
-        # if  a host has a : in it, split on the :, first field will be host
-        # second field will be the port
-        if ":" in host:
-            host_info = host.split(":")
-            all_hosts.append((host_info[0], int(host_info[1])))
-        else:
-            all_hosts.append((host, 443))
+    all_hosts = get_host_list_tuple(hosts)
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as epool:
         for hostinfo in epool.map(lambda x: get_certificate(x[0], x[1]), all_hosts):
             output_string = "\n"
