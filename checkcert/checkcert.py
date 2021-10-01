@@ -94,7 +94,7 @@ def get_issuer(cert):
     help="Read a list of hosts to check from a file",
 )
 @click.option(
-    "--valid/--no-valid", default=True, help="Show the text field for cert validity"
+    "--valid/--no-valid", default=True, help="Show True/False for cert validity"
 )
 @click.argument("hosts", nargs=-1)
 def main(san, dump, color, filename, valid, hosts):
