@@ -87,12 +87,24 @@ def get_issuer(cert):
     default=True,
     help="Enable/disable ANSI color output to show cert validity",
 )
+@click.option(
+    "--filename",
+    "-f",
+    type=click.Path(),
+    help="Read a list of hosts to check from a file",
+)
 @click.argument("hosts", nargs=-1)
-def main(san, dump, color, hosts):
+def main(san, dump, color, filename, hosts):
     """Return information about certificates given including their validity"""
     # setup the list of tuples
     all_hosts = []
     # handle a domain given with a : in it to specify the port
+    if filename:
+        hosts = []
+        with open(filename, "r") as infile:
+            for line in infile:
+                line = line.strip()
+                hosts.append(line)
     for host in hosts:
         # if  a host has a : in it, split on the :, first field will be host
         # second field will be the port
