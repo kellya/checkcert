@@ -101,7 +101,7 @@ def main(san, dump, color, filename, hosts):
     # handle a domain given with a : in it to specify the port
     if filename:
         hosts = []
-        with open(filename, "r") as infile:
+        with open(filename, "r", encoding="utf-8") as infile:
             for line in infile:
                 line = line.strip()
                 hosts.append(line)
