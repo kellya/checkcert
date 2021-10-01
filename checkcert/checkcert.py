@@ -93,8 +93,11 @@ def get_issuer(cert):
     type=click.Path(),
     help="Read a list of hosts to check from a file",
 )
+@click.option(
+    "--valid/--no-valid", default=True, help="Show the text field for cert validity"
+)
 @click.argument("hosts", nargs=-1)
-def main(san, dump, color, filename, hosts):
+def main(san, dump, color, filename, valid, hosts):
     """Return information about certificates given including their validity"""
     # setup the list of tuples
     all_hosts = []
@@ -115,7 +118,7 @@ def main(san, dump, color, filename, hosts):
             all_hosts.append((host, 443))
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as epool:
         for hostinfo in epool.map(lambda x: get_certificate(x[0], x[1]), all_hosts):
-            output_string = ""
+            output_string = "\n"
             if dump:
                 print(get_x509_text(hostinfo.cert).decode())
             else:
@@ -123,12 +126,14 @@ def main(san, dump, color, filename, hosts):
                     f"{hostinfo.hostname} "
                     f"({hostinfo.peername[0]}:{hostinfo.peername[1]})\n"
                 )
-                output_string += f"\tcommonName: {get_common_name(hostinfo.cert)}\n"
+                output_string += f"    commonName: {get_common_name(hostinfo.cert)}\n"
+                output_string += f"        issuer: {get_issuer(hostinfo.cert)}\n"
+                output_string += f"     notBefore: {hostinfo.cert.not_valid_before}\n"
+                output_string += f"      notAfter: {hostinfo.cert.not_valid_after}\n"
+                if valid:
+                    output_string += f"         Valid: {hostinfo.is_valid}\n"
                 if san:
-                    output_string += f"\tSAN: {get_alt_names(hostinfo.cert)}\n"
-                output_string += f"\tissuer: {get_issuer(hostinfo.cert)}\n"
-                output_string += f"\tnotBefore: {hostinfo.cert.not_valid_before}\n"
-                output_string += f"\tnotAfter:  {hostinfo.cert.not_valid_after}\n\n"
+                    output_string += f"           SAN: {get_alt_names(hostinfo.cert)}\n"
                 if hostinfo.is_valid and color:
                     click.echo(click.style(output_string, fg="green"))
                 elif not hostinfo.is_valid and color:
