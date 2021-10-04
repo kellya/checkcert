@@ -18,6 +18,7 @@ dir:
 clean:
 	rm -rf $(BUILDDIR)
 	find . -name __pycache__|xargs rm -rf
+	rm -rf docs/build
 
 docs:
 	cd docs && make html

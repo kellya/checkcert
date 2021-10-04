@@ -12,12 +12,4 @@ Welcome to checkcert's documentation!
 
    introduction
    install
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   running
