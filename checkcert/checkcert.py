@@ -107,7 +107,7 @@ def get_host_list_tuple(hosts: list) -> List[Tuple[str, int]]:
     help="Read a list of hosts to check from a file",
 )
 @click.option(
-    "--valid/--no-valid", default=True, help="Show True/False for cert validity"
+    "--valid/--no-valid", default=False, help="Show True/False for cert validity"
 )
 @click.option(
     "--san-only",
