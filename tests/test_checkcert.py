@@ -50,7 +50,19 @@ def test_san():
 
 def test_san_only():
     """verify --san outputs correctly"""
-    response = runner.invoke(cert_main, ["www.franklin.edu", "--san-only"])
+    check_domain = "franklin.edu"
+    response = runner.invoke(cert_main, ["--san-only", check_domain])
+    assert response.exit_code == 0
+    sep_string = ","
+    response = runner.invoke(
+        cert_main, ["--san-only", f"--sep={sep_string}", check_domain]
+    )
+    assert response.exit_code == 0
+    assert sep_string in response.output
+    sep_string = " -d "
+    response = runner.invoke(
+        cert_main, ["--san-only", f"--sep={sep_string}", check_domain]
+    )
     assert response.exit_code == 0
 
 

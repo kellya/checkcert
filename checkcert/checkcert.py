@@ -141,7 +141,10 @@ def main(san, dump, color, filename, valid, san_only, sep, pre, hosts):
                     output_string = ""
                     if pre:
                         output_string += f"{sep}".lstrip()
-                    output_string += f"{sep}".join(get_alt_names(hostinfo.cert))
+                    alt_names = get_alt_names(hostinfo.cert)
+                    if hostinfo.hostname not in alt_names:
+                        alt_names.insert(0, hostinfo.hostname)
+                    output_string += f"{sep}".join(alt_names)
                     print(output_string)
                     break
                 output_string += (
