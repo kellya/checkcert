@@ -109,8 +109,14 @@ def get_host_list_tuple(hosts: list) -> List[Tuple[str, int]]:
 @click.option(
     "--valid/--no-valid", default=True, help="Show True/False for cert validity"
 )
+@click.option(
+    "--san-only",
+    "-o",
+    is_flag=True,
+    help="Output only the SAN names to use in passing to certbot for example",
+)
 @click.argument("hosts", nargs=-1)
-def main(san, dump, color, filename, valid, hosts):
+def main(san, dump, color, filename, valid, san_only, hosts):
     """Return information about certificates given including their validity"""
     # setup the list of tuples
     # handle a domain given with a : in it to specify the port
@@ -127,6 +133,10 @@ def main(san, dump, color, filename, valid, hosts):
             if dump:
                 print(get_x509_text(hostinfo.cert).decode())
             else:
+                if san_only:
+                    san_names = " ".join(get_alt_names(hostinfo.cert))
+                    print(san_names)
+                    break
                 output_string += (
                     f"{hostinfo.hostname} "
                     f"({hostinfo.peername[0]}:{hostinfo.peername[1]})\n"

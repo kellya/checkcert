@@ -48,6 +48,12 @@ def test_san():
     assert response.exit_code == 0
 
 
+def test_san_only():
+    """verify --san outputs correctly"""
+    response = runner.invoke(cert_main, ["www.franklin.edu", "--san-only"])
+    assert response.exit_code == 0
+
+
 def test_bad_cert():
     """verify an expired certificate works"""
     response = runner.invoke(cert_main, ["support.bluequill.com", "--san"])
