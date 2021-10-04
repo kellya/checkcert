@@ -19,6 +19,9 @@ clean:
 	rm -rf $(BUILDDIR)
 	find . -name __pycache__|xargs rm -rf
 
+docs:
+	cd docs && make html
+
 poetry-release: build
 	poetry publish
 
@@ -49,4 +52,4 @@ tea-release: build
 
 release: poetry-release
 
-.PHONY: dir clean release gh-release poetry-release coverage tea-release
+.PHONY: dir clean release gh-release poetry-release coverage tea-release docs
