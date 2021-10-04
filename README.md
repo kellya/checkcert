@@ -6,6 +6,9 @@ gist](https://gist.github.com/gdamjan/55a8b9eec6cf7b771f92021d93b87b2c).
 checkcert has the logic of that gist wrapped in a click-based CLI and added command-line options
 (checkcert --help to see them)
 
+Full documentation is available at
+[https://checkcert.readthedocs.io](https://checkcert.readthedocs.io)
+
 # Installation
 
 ## from PyPi
