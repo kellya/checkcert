@@ -13,3 +13,4 @@ Welcome to checkcert's documentation!
    introduction
    install
    running
+   shell_completion
