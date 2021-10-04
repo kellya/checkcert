@@ -115,8 +115,12 @@ def get_host_list_tuple(hosts: list) -> List[Tuple[str, int]]:
     is_flag=True,
     help="Output only the SAN names to use in passing to certbot for example",
 )
+@click.option(
+    "--pre/--no-pre", default=False, help="prefix the --san-only with the separator"
+)
+@click.option("--sep", "-s", default=" ", help="Separator to use in --san-only output")
 @click.argument("hosts", nargs=-1)
-def main(san, dump, color, filename, valid, san_only, hosts):
+def main(san, dump, color, filename, valid, san_only, sep, pre, hosts):
     """Return information about certificates given including their validity"""
     # setup the list of tuples
     # handle a domain given with a : in it to specify the port
@@ -134,8 +138,11 @@ def main(san, dump, color, filename, valid, san_only, hosts):
                 print(get_x509_text(hostinfo.cert).decode())
             else:
                 if san_only:
-                    san_names = " ".join(get_alt_names(hostinfo.cert))
-                    print(san_names)
+                    output_string = ""
+                    if pre:
+                        output_string += f"{sep}".lstrip()
+                    output_string += f"{sep}".join(get_alt_names(hostinfo.cert))
+                    print(output_string)
                     break
                 output_string += (
                     f"{hostinfo.hostname} "
