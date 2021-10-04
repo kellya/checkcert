@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "checkcert"
-version = "0.4.0"
+version = "0.5.0"
 description = "CLI to check tls cert information and determine validity"
 authors = ["Alex Kelly <kellya@arachnitech.com>"]
 readme = "README.md"
