@@ -6,7 +6,7 @@ This section assumes that checkcert is installed via pypi, and the ``certcheck``
 Basic query
 -----------
 
-To do a simple validation, run something like ``checkcert www.example.com``.  You should get output like:
+To do a simple validation, run something like ``checkcert www.example.com``.  This should yield output like:
 
 .. figure:: images/basic.png
    :alt: basic output example
@@ -90,7 +90,7 @@ If it is desired to output that list to another command as commandline options (
 
 .. note:: the documentation for certbot specifies multiple domains should be specified each with their own '-d' option.  certbot in particular seems to work with a comma-separated list too, even though the docs don't specify that it works that way.
 
-Notice that the " -d " is used as a **separator** and therefore the first entry does not have a -d before it.  To make -d show up before every entry (as would be required in this case) you must also add --pre to "prefix" the entry with the separator; thus, running ``checkcert --san-only --sep " -d " --pre www.example.com`` will yield::
+Notice that the " -d " is used as a **separator** and therefore the first entry does not have a -d before it.  To make -d show up before every entry (as would be required in this case) The ``--pre`` option must be added to "prefix" the entry with the separator; thus, running ``checkcert --san-only --sep " -d " --pre www.example.com`` will yield::
 
     -d www.example.org -d example.com -d example.edu -d example.net -d example.org -d www.example.com -d www.example.edu -d www.example.net
 
@@ -104,7 +104,7 @@ This output could be directly included into certbot as ``certbot $(checkcert --s
 Dumping the text version of a cert
 ----------------------------------
 
-``--dump`` will give you the textual version of the certificate presented.  Running ``checkcert --dump www.example.com`` will return::
+``--dump`` will output the textual version of the certificate presented.  Running ``checkcert --dump www.example.com`` will return::
 
     Certificate:
         Data:
