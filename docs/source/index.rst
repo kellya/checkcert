@@ -11,6 +11,7 @@ Welcome to checkcert's documentation!
    :caption: Contents:
 
    introduction
+   install
 
 
 
