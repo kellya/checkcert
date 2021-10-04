@@ -5,6 +5,7 @@ description = "CLI to check tls cert information and determine validity"
 authors = ["Alex Kelly <kellya@arachnitech.com>"]
 readme = "README.md"
 homepage = "https://github.com/kellya/checkcert"
+documentation = "https://checkcert.readthedocs.io"
 license = "MIT"
 
 [tool.poetry.dependencies]
