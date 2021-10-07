@@ -89,7 +89,7 @@ def get_host_list_tuple(hosts: list) -> List[Tuple[str, int]]:
     return all_hosts
 
 
-def print_output(hostinfo, settings: dict) -> None:
+def print_output(hostinfo: HostInfo, settings: dict) -> None:
     """print the output of hostinfo conditionally based on items in settings"""
     output_string = ""
     if settings["san_only"]:
@@ -100,6 +100,8 @@ def print_output(hostinfo, settings: dict) -> None:
             alt_names.insert(0, hostinfo.hostname)
         output_string += f"{settings['sep']}".join(alt_names)
         print(output_string)
+        # in the san-only branch, once we get to this point the output is
+        # already complete, so just return to end the function processing
         return None
     output_string += (
         f"\n{hostinfo.hostname} " f"({hostinfo.peername[0]}:{hostinfo.peername[1]})\n"
