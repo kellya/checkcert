@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.7.0 (2021-10-07)
+
+#### New Features
+
+* (completion): add completion scripts
+#### Docs
+
+* add intro readme for docs building
+* add shell completion information
+* update full doc url in readme
+* remove personal "you/I/me"
+* add full documentation site
+* update changelog for 0.6.0
+#### Others
+
+* fix separator testing issues
+
+Full set of changes: [`v0.6.0...v0.7.0`](https://git.admin.franklin.edu/tins/checkcert/compare/v0.6.0...v0.7.0)
+
 ## v0.6.0 (2021-10-04)
 
 #### New Features
