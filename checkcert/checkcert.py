@@ -89,6 +89,38 @@ def get_host_list_tuple(hosts: list) -> List[Tuple[str, int]]:
     return all_hosts
 
 
+def print_output(hostinfo, settings: dict) -> None:
+    """print the output of hostinfo conditionally based on items in settings"""
+    output_string = ""
+    if settings["san_only"]:
+        if settings["pre"]:
+            output_string += f"{settings['sep']}".lstrip()
+        alt_names = get_alt_names(hostinfo.cert)
+        if hostinfo.hostname not in alt_names:
+            alt_names.insert(0, hostinfo.hostname)
+        output_string += f"{settings['sep']}".join(alt_names)
+        print(output_string)
+        return None
+    output_string += (
+        f"\n{hostinfo.hostname} " f"({hostinfo.peername[0]}:{hostinfo.peername[1]})\n"
+    )
+    output_string += f"    commonName: {get_common_name(hostinfo.cert)}\n"
+    output_string += f"        issuer: {get_issuer(hostinfo.cert)}\n"
+    output_string += f"     notBefore: {hostinfo.cert.not_valid_before}\n"
+    output_string += f"      notAfter: {hostinfo.cert.not_valid_after}\n"
+    if settings["valid"]:
+        output_string += f"         Valid: {hostinfo.is_valid}\n"
+    if settings["san"]:
+        output_string += f"           SAN: {get_alt_names(hostinfo.cert)}\n"
+    if hostinfo.is_valid and settings["color"]:
+        click.echo(click.style(output_string, fg="green"))
+    elif not hostinfo.is_valid and settings["color"]:
+        click.echo(click.style(output_string, fg="red"))
+    else:
+        click.echo(click.style(output_string))
+    return None
+
+
 @click.command()
 @click.version_option(__version__, prog_name="checkcert")
 @click.option("--san", is_flag=True, help="Output Subject Alternate Names")
@@ -133,38 +165,19 @@ def main(san, dump, color, filename, valid, san_only, sep, pre, hosts):
     all_hosts = get_host_list_tuple(hosts)
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as epool:
         for hostinfo in epool.map(lambda x: get_certificate(x[0], x[1]), all_hosts):
-            output_string = "\n"
             if dump:
                 print(get_x509_text(hostinfo.cert).decode())
             else:
-                if san_only:
-                    output_string = ""
-                    if pre:
-                        output_string += f"{sep}".lstrip()
-                    alt_names = get_alt_names(hostinfo.cert)
-                    if hostinfo.hostname not in alt_names:
-                        alt_names.insert(0, hostinfo.hostname)
-                    output_string += f"{sep}".join(alt_names)
-                    print(output_string)
-                    break
-                output_string += (
-                    f"{hostinfo.hostname} "
-                    f"({hostinfo.peername[0]}:{hostinfo.peername[1]})\n"
-                )
-                output_string += f"    commonName: {get_common_name(hostinfo.cert)}\n"
-                output_string += f"        issuer: {get_issuer(hostinfo.cert)}\n"
-                output_string += f"     notBefore: {hostinfo.cert.not_valid_before}\n"
-                output_string += f"      notAfter: {hostinfo.cert.not_valid_after}\n"
-                if valid:
-                    output_string += f"         Valid: {hostinfo.is_valid}\n"
-                if san:
-                    output_string += f"           SAN: {get_alt_names(hostinfo.cert)}\n"
-                if hostinfo.is_valid and color:
-                    click.echo(click.style(output_string, fg="green"))
-                elif not hostinfo.is_valid and color:
-                    click.echo(click.style(output_string, fg="red"))
-                else:
-                    click.echo(click.style(output_string))
+                settings_dict = {
+                    "san": san,
+                    "sep": sep,
+                    "dump": dump,
+                    "color": color,
+                    "valid": valid,
+                    "san_only": san_only,
+                    "pre": pre,
+                }
+                print_output(hostinfo, settings_dict)
 
 
 if __name__ == "__main__":
