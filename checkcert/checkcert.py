@@ -7,6 +7,7 @@ import click
 from OpenSSL import SSL
 from OpenSSL import crypto
 from cryptography import x509
+from OpenSSL.crypto import X509
 from cryptography.x509.oid import NameOID
 import idna
 
@@ -41,7 +42,7 @@ def get_certificate(hostname: str, port: int) -> HostInfo:
     )
 
 
-def get_alt_names(cert: Any) -> Any:
+def get_alt_names(cert: x509.Certificate) -> Any:
     """retrieve the SAN values for given cert"""
     try:
         ext = cert.extensions.get_extension_for_class(x509.SubjectAlternativeName)
@@ -50,12 +51,12 @@ def get_alt_names(cert: Any) -> Any:
         return None
 
 
-def get_x509_text(cert: Any) -> Any:
+def get_x509_text(cert: X509) -> bytes:
     """return the human-readable text version of the certificate"""
     return crypto.dump_certificate(crypto.FILETYPE_TEXT, cert)
 
 
-def get_common_name(cert: Any) -> Any:
+def get_common_name(cert: x509.Certificate) -> Any:
     """Return the common name from the certificate"""
     try:
         names = cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)
@@ -64,7 +65,7 @@ def get_common_name(cert: Any) -> Any:
         return None
 
 
-def get_issuer(cert: Any) -> Any:
+def get_issuer(cert: x509.Certificate) -> Any:
     """Return the name of the CA/Issuer of the certificate"""
     try:
         names = cert.issuer.get_attributes_for_oid(NameOID.COMMON_NAME)
