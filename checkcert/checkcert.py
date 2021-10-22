@@ -1,4 +1,5 @@
 """ CLI to get basic information about certificates and determine validity"""
+import sys
 from collections import namedtuple
 import concurrent.futures
 from socket import socket
@@ -6,8 +7,8 @@ from typing import List, Tuple, Any
 import click
 from OpenSSL import SSL
 from OpenSSL import crypto
-from cryptography import x509
 from OpenSSL.crypto import X509
+from cryptography import x509
 from cryptography.x509.oid import NameOID
 import idna
 
@@ -22,7 +23,11 @@ def get_certificate(hostname: str, port: int) -> HostInfo:
     hostname_idna = idna.encode(hostname)
     sock = socket()
 
-    sock.connect((hostname, port))
+    try:
+        sock.connect((hostname, port))
+    except ConnectionRefusedError:
+        print("Error: Connection Refused")
+        sys.exit(3)
     peername = sock.getpeername()
     ctx = SSL.Context(SSL.SSLv23_METHOD)  # most compatible
     sock_ssl = SSL.Connection(ctx, sock)
@@ -92,7 +97,7 @@ def get_host_list_tuple(hosts: list) -> List[Tuple[str, int]]:
 
 def print_output(hostinfo: HostInfo, settings: dict) -> None:
     """print the output of hostinfo conditionally based on items in settings"""
-    output_string = ""
+    output_string: str = ""
     if settings["san_only"]:
         if settings["pre"]:
             output_string += f"{settings['sep']}".lstrip()
